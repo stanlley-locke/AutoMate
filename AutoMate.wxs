@@ -1,0 +1,62 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="AutoMate"
+           Manufacturer="AutoMate AI"
+           Version="1.0.0"
+           UpgradeCode="B9F7C495-07EA-4A2B-8C61-5501861E7A91"
+           Scope="perMachine">
+
+    <SummaryInformation Description="AutoMate - Windows Desktop Automation Agent Installer" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of AutoMate is already installed." />
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+    <!-- Application Icon -->
+    <Icon Id="AutoMateIcon.ico" SourceFile="automate_icon.ico" />
+    <Property Id="ARPPRODUCTICON" Value="AutoMateIcon.ico" />
+    <Property Id="ARPHELPLINK" Value="https://github.com/automate" />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/automate" />
+
+    <!-- Installation Directory Structure -->
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="AutoMate" />
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ApplicationProgramsFolder" Name="AutoMate" />
+    </StandardDirectory>
+
+    <StandardDirectory Id="DesktopFolder" />
+
+    <!-- Harvest All Application Binaries & Assets -->
+    <ComponentGroup Id="ProductFiles" Directory="INSTALLFOLDER">
+      <Files Include="dist\AutoMate\**" />
+    </ComponentGroup>
+
+    <!-- Start Menu & Desktop Shortcuts Component -->
+    <ComponentGroup Id="ProductShortcuts">
+      <Component Id="ApplicationShortcuts" Directory="ApplicationProgramsFolder" Guid="D3F12C68-1243-41E9-9AB2-1456B7208C12">
+        <Shortcut Id="AppStartMenuShortcut"
+                  Name="AutoMate"
+                  Description="AutoMate - Windows Desktop Automation Agent"
+                  Target="[INSTALLFOLDER]AutoMate.exe"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="AutoMateIcon.ico" />
+        <Shortcut Id="AppDesktopShortcut"
+                  Directory="DesktopFolder"
+                  Name="AutoMate"
+                  Description="AutoMate - Windows Desktop Automation Agent"
+                  Target="[INSTALLFOLDER]AutoMate.exe"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="AutoMateIcon.ico" />
+        <RemoveFolder Id="CleanUpProgramMenu" Directory="ApplicationProgramsFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\AutoMateAI\AutoMate" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <!-- Main Installation Feature -->
+    <Feature Id="MainFeature" Title="AutoMate Application" Level="1">
+      <ComponentGroupRef Id="ProductFiles" />
+      <ComponentGroupRef Id="ProductShortcuts" />
+    </Feature>
+  </Package>
+</Wix>
